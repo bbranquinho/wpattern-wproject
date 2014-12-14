@@ -1,0 +1,11 @@
+<project name="wproject-web-jsf" default="hot-deploy">
+
+	<property environment="env" />
+
+	<target name="hot-deploy">
+		<copy todir="target/wproject-web-jsf-0.0.1-SNAPSHOT">
+			<fileset dir="src/main/webapp/" />
+		</copy>
+	</target>
+
+</project>

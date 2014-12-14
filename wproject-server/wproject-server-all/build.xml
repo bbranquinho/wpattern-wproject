@@ -1,0 +1,92 @@
+<project name="wproject-server-all" default="remake-all">
+	
+	<property environment="env"/>
+	
+	<property file="build.properties" />
+
+	<target name="package">
+		<antcall target="mvn">
+			<param name="mvn.command" value="package" />
+		</antcall>
+	</target>
+	
+	<target name="clean">
+		<antcall target="mvn">
+			<param name="mvn.command" value="clean" />
+		</antcall>
+	</target>
+	
+	<target name="remake-all" >
+		<antcall target="clean"/>
+		<antcall target="install"/>
+		<antcall target="eclipse:clean" />
+		<antcall target="eclipse:eclipse" />
+	</target>
+	
+	<target name="install">
+		<antcall target="mvn">
+			<param name="mvn.command" value="install" />
+		</antcall>
+	</target>
+	
+	<target name="install.POWER">
+		<antcall target="clean"/>
+		<antcall target="install"/>
+	</target>
+	
+	<target name="eclipse:clean">
+		<antcall target="mvn">
+			<param name="mvn.command" value="eclipse:clean" />
+		</antcall>
+	</target>
+	
+	<target name="eclipse:eclipse">
+		<antcall target="mvn">
+			<param name="mvn.command" value="eclipse:eclipse" />
+		</antcall>
+	</target>
+	
+	<target name="eclipse:eclipse.POWER">
+		<antcall target="eclipse:clean" />
+		<antcall target="eclipse:eclipse" />
+	</target>
+	
+	<target name="deploy">
+		<copy file="./wproject-server-all/target/${artifact.name}" todir="${directory.artifact.dest}"></copy>
+	</target>
+	
+	<target name="mvn">
+		<exec executable="${env.MAVEN_HOME}/bin/mvn.bat">
+			<arg value="${mvn.command}" />
+			<arg value="-Dmaven.test.skip=true" />
+		</exec>
+	</target>
+	
+	<target name="depgraph">
+		<exec executable="${env.MAVEN_HOME}/bin/mvn.bat">
+			<arg value="install" />
+			<arg value="depgraph:fullgraph" />
+			<arg value="-Dmaven.test.skip=true" />
+			<arg value="-Ddepgraph.artifactFilter=wproject" />
+		</exec>
+	</target>
+	
+	<target name="depgraph:all">
+		<exec executable="${env.MAVEN_HOME}/bin/mvn.bat">
+			<arg value="install" />
+			<arg value="depgraph:fullgraph" />
+			<arg value="-Dmaven.test.skip=true" />
+		</exec>
+	</target>
+	
+	<target name="depgraph:file:svg">
+		<exec executable="${env.MAVEN_HOME}/bin/mvn.bat">
+			<arg value="install" />
+			<arg value="depgraph:fullgraph" />
+			<arg value="-Dmaven.test.skip=true" />
+			<arg value="-Ddepgraph.artifactFilter=wproject" />
+			<arg value="-Ddepgraph.ext=svg" />
+		</exec>
+	</target>
+	
+</project>

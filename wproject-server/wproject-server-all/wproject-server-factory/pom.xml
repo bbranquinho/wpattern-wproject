@@ -1,0 +1,110 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.wproject.server</groupId>
+		<artifactId>wproject-server-all</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>wproject-server-factory</artifactId>
+	<packaging>war</packaging>
+
+	<dependencies>
+		<!-- WPROJECT SERVER DATABASE -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wproject-server-database</artifactId>
+		</dependency>
+
+		<!-- WPROJECT SERVER SERVICE -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wproject-server-service</artifactId>
+		</dependency>
+
+		<!-- WPROJECT SERVER UTILS -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wproject-server-utils</artifactId>
+		</dependency>
+
+		<!-- SPRING WEB -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<finalName>${project.name}-${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<!-- Delete folder LIB with the execution of install. -->
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<delete>
+									<fileset dir="${basedir}/target/${project.build.finalName}/WEB-INF">
+										<exclude name="lib" />
+									</fileset>
+								</delete>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.26</version>
+
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<stopPort>9966</stopPort>
+					<stopKey>jetty-stop</stopKey>
+
+					<scanTargetPatterns>
+						<scanTargetPattern>
+							<directory>../</directory>
+							<excludes>
+								<include>**/*test.xml</include>
+								<include>**/*test.properties</include>
+								<include>**/*test.java</include>
+							</excludes>
+							<includes>
+								<include>**/*.xml</include>
+								<include>**/*.properties</include>
+								<include>**/*.java</include>
+							</includes>
+						</scanTargetPattern>
+					</scanTargetPatterns>
+
+					<webAppConfig>
+						<contextPath>/</contextPath>
+						<baseResource implementation="org.mortbay.resource.ResourceCollection">
+							<resourcesAsCSV>${basedir}/target/${project.build.finalName}</resourcesAsCSV>
+						</baseResource>
+					</webAppConfig>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
